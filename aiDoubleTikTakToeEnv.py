@@ -26,7 +26,7 @@ class EnvironmentNoVsDoubleTikTakToe(gym.Env): # TikTakToe Trainingsumgebung
 
     def __init__(self, rendering): # Trainingseinheit initialisieren
         super(EnvironmentNoVsDoubleTikTakToe, self).__init__()
-        self.action_space = spaces.Discrete(2,2,2,2)
+        self.action_space = spaces.Discrete((2,2,2,2),)
         self.observation_space = spaces.Box(low=-255, high=+255, shape=(3,3,3,3), dtype=np.uint8)
         self.ttt = DoubleTikTakToe()
 
