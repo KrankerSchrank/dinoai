@@ -11,11 +11,11 @@ class DoubleTikTakToe():
     def __init__(self): # Initialisiere alle wichtigen Variablen
         self.MAX_ROWS = self.MAX_COL = 3
 
-        self.board = [[[[" " for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
+        self.board = [[[[0 for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
 
-        self.activePlayer = "X"
-        self.cache = ""
-        self.otherPlayer = "O"
+        self.activePlayer = 1
+        self.cache = 0
+        self.otherPlayer = 2
         self.forceFieldROW = 3
         self.forceFieldCOL = 3
         self.streak = 0
@@ -24,7 +24,7 @@ class DoubleTikTakToe():
         self.firstOpen = True
 
     def checkGlobalWin(self, event): # Prüfe ob ein Spieler das Spiel gewonnen hat
-        winningPlayer = "W" + self.otherPlayer
+        winningPlayer = 2 + self.otherPlayer
         streak = 0
         for i in range(3):
             if self.board[i][event[1]][event[2]][event[3]] == self.winningPlayer:
@@ -55,7 +55,7 @@ class DoubleTikTakToe():
     def win(self, event): # Markiere das ein Spieler ein Feld gewonnen hat
         for i in range(3):
             for j in range(3):
-                self.winningPlayer = "W" + self.otherPlayer
+                self.winningPlayer = 2 + self.otherPlayer
                 self.board[event[0]][event[1]][i][j] = self.winningPlayer
 
     def checkWin(self, event): # Prüft ob ein Spieler das Feld gewonnen hat
@@ -89,7 +89,7 @@ class DoubleTikTakToe():
     def checkObstructed(self): # Prüft ob ein Feld besetzt ist
         for i in range(3):
             for j in range(3):
-                if self.board[self.forceFieldROW][self.forceFieldCOL][i][j] == " ": return False
+                if self.board[self.forceFieldROW][self.forceFieldCOL][i][j] == 0: return False
         return True
 
     def place(self, event): # Prüft ob der Gewünschte Move valid ist und führt diesen aus
@@ -97,7 +97,7 @@ class DoubleTikTakToe():
 
         if self.forceFieldCOL != 3 and self.forceFieldROW != 3: # Prüfen ob der Spieler freie Feld wahl hat, wenn nicht prüfen ob das Feld zugelasen ist
             forceboard = self.board[self.forceFieldCOL][self.forceFieldROW][1][1]
-            if forceboard == "WX" or forceboard == "WO" or forceboard == "B":
+            if forceboard == 3 or forceboard == 4 or forceboard == 5:
                 for i in range(3):
                     self.forceFieldCOL = 3
                     self.forceFieldROW = 3
@@ -112,7 +112,7 @@ class DoubleTikTakToe():
             if error == True:
                 return [9, self.activePlayer]
 
-        if self.board[event[0]][event[1]][event[2]][event[3]] == " " and error == False: # Prüft ob ein Move möglich ist
+        if self.board[event[0]][event[1]][event[2]][event[3]] == 0 and error == False: # Prüft ob ein Move möglich ist
             self.board[event[0]][event[1]][event[2]][event[3]] = self.activePlayer # Ausführung des Moves
 
             self.forceFieldCOL = event[2]
@@ -154,11 +154,11 @@ class DoubleTikTakToe():
     def settings(self): # Setzt das Spiel zurück
         self.MAX_ROWS = self.MAX_COL = 3
 
-        self.board = [[[[" " for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
+        self.board = [[[[0 for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
 
-        self.activePlayer = "X"
-        self.cache = ""
-        self.otherPlayer = "O"
+        self.activePlayer = 1
+        self.cache = 0
+        self.otherPlayer = 2
         self.forceFieldROW = 3
         self.forceFieldCOL = 3
         self.streak = 0
@@ -204,7 +204,18 @@ class Render(): # Rendert das Spiel
                 exit()
             elif self.state[0][0] == 7:
                 self.board = self.state[2]
-                text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+                if self.board[a][b][c][d] == 0:
+                    text = " "
+                elif self.board[a][b][c][d] == 1:
+                    text = "X"
+                elif self.board[a][b][c][d] == 2:
+                    text = "O"
+                elif self.board[a][b][c][d] == 3:
+                    text = "WX"
+                elif self.board[a][b][c][d] == 4:
+                    text = "WO"
+                elif self.board[a][b][c][d] == 5:
+                    text = "B"
                 dpg.set_item_label(self.tableObjects[a][b][c][d], f'{text}')
 
                 self.forceFieldCOL = self.state[1][0]
@@ -220,7 +231,18 @@ class Render(): # Rendert das Spiel
                 a, b, c, d = self.state[3]
 
                 self.board = self.state[2]
-                text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+                if self.board[a][b][c][d] == 0:
+                    text = " "
+                elif self.board[a][b][c][d] == 1:
+                    text = "X"
+                elif self.board[a][b][c][d] == 2:
+                    text = "O"
+                elif self.board[a][b][c][d] == 3:
+                    text = "WX"
+                elif self.board[a][b][c][d] == 4:
+                    text = "WO"
+                elif self.board[a][b][c][d] == 5:
+                    text = "B"
                 dpg.set_item_label(self.tableObjects[a][b][c][d], f'{text}')
 
                 self.forceFieldCOL = self.state[1][0]
@@ -271,7 +293,10 @@ class Render(): # Rendert das Spiel
                             if j == 0 or j == 3 or j == 6: d = 0
                             elif j == 1 or j == 4 or j == 7: d = 1
                             else: d = 2
-                            text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+                            if self.board[a][b][c][d] == 0:
+                                text = " "
+                            else:
+                                text = self.board[a][b][c][d]
 
                             self.tableObjects[a][b][c][d] = uuid = dpg.generate_uuid()
 
