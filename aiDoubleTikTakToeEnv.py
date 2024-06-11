@@ -11,7 +11,6 @@ from doubletiktaktoe import DoubleTikTakToe
 
 from stable_baselines3.common.policies import ActorCriticPolicy
 
-import cv2
 import gym
 import numpy as np
 from PIL import Image
