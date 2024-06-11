@@ -100,7 +100,7 @@ class EnvironmentNoVsDoubleTikTakToe(gym.Env): # TikTakToe Trainingsumgebung
 from tqdm import tqdm
 
 if __name__ == '__main__': # Ausführung des Trainingsprozesses oder Testen der KI
-    env_lambda = lambda: EnvironmentCliTikTakToe(False)
+    env_lambda = lambda: EnvironmentNoVsDoubleTikTakToe(False)
     do_train = True # Legt fest ob die KI Trainiert wird
     num_cpu = 24 # Anzahl Trainingsinstanzen
     save_path = "cli_ttt_ppo_cnn_1980000_rnd_steps.zip"
@@ -108,7 +108,7 @@ if __name__ == '__main__': # Ausführung des Trainingsprozesses oder Testen der 
     if do_train == True:
         env = SubprocVecEnv([env_lambda for i in range(num_cpu)]) # Trainiert mit der festgelegten Anzahl Trainingsinstanzen
     else:
-        env = EnvironmentCliTikTakToe(True) # Führt eine einzelne Distanz zu demonstrationszwecken aus
+        env = EnvironmentNoVsDoubleTikTakToe(True) # Führt eine einzelne Distanz zu demonstrationszwecken aus
 # Training
     if do_train:
         checkpoint_callback = CheckpointCallback(
