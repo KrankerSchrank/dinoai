@@ -4,7 +4,7 @@ import platform
 import time
 from os import system
 
-import dearpygui.dearpygui as dpg
+# import dearpygui.dearpygui as dpg
 
 class DoubleTikTakToe():
 
@@ -125,9 +125,11 @@ class DoubleTikTakToe():
             if iswin == 1: # Wenn ja makiere das Feld als gewonnen
                 self.win(event)
                 self.isglobalwin = self.checkGlobalWin(event) # Prüfe ob der Spieler das Spiel gewonnen hat
-                iswin = 0
             if self.isglobalwin == 1:
                 return [1, self.otherPlayer]
+            if iswin == 1:
+                return [10, self.otherPlayer]
+            iswin = 0
         elif error != True:
             return [8, self.activePlayer]
         error = False
@@ -178,6 +180,7 @@ class DoubleTikTakToe():
         else:
             system('clear')
 
+'''
 class Render(): # Rendert das Spiel
 # TODO: : in eigene Datei Refactorn um damit auch die KI nutzen zu können sollte kein Problem sein
     def __init__(self): # Initsialisiere Dearpygui
@@ -320,3 +323,4 @@ if __name__ == "__main__": # Rendering aufrufen
     render = Render()
 
     render.render()
+'''
