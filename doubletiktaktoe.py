@@ -115,8 +115,8 @@ class DoubleTikTakToe():
         if self.board[event[0]][event[1]][event[2]][event[3]] == " " and error == False: # Prüft ob ein Move möglich ist
             self.board[event[0]][event[1]][event[2]][event[3]] = self.activePlayer # Ausführung des Moves
 
-            self.forceFieldCOL = event[3]
-            self.forceFieldROW = event[2] # Legt nächstes Feld Fest
+            self.forceFieldCOL = event[2]
+            self.forceFieldROW = event[3] # Legt nächstes Feld Fest
 
             self.cache = self.activePlayer # Wechsele Aktiven Spieler
             self.activePlayer = self.otherPlayer
@@ -140,7 +140,6 @@ class DoubleTikTakToe():
 
     def rndPlace(self): # Führt einen Move für zufällige Koordinaten aus
         c = choice([0, 1, 2])
-        print(c)
         d = choice([0, 1, 2])
         if self.forceFieldCOL == 3 and self.forceFieldROW == 3:
             a = choice([0, 1, 2])
@@ -180,7 +179,7 @@ class DoubleTikTakToe():
             system('clear')
 
 class Render(): # Rendert das Spiel
-# TODO: : Fixen der Ausgabe und in eigene Datei Refactorn um damit auch die KI nutzen zu können sollte kein Problem sein
+# TODO: : in eigene Datei Refactorn um damit auch die KI nutzen zu können sollte kein Problem sein
     def __init__(self): # Initsialisiere Dearpygui
         dpg.create_context()
         self.userData = [0,0,0,0]
@@ -196,41 +195,39 @@ class Render(): # Rendert das Spiel
         self.tableObjects = [[[[0 for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
 
     def clb_selectable(self, sender, app_data, user_data): # Reaktion auf Input und Game Loop
-        # try:
-        a, b, c, d = user_data
+        try:
+            a, b, c, d = user_data
 
-        print(self.tableObjects[a][b][c][d])
-        self.state = self.game.pickPlace(a, b, c, d)
-        if self.state[0][0] == 1:
-            print(f"You Won {state[0][1]}")
-            exit()
-        elif self.state[0][0] == 7:
-            self.board = self.state[2]
-            text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
-            # BUG: Wie ändert man bitteschön den Text (Fixen)
-            dpg.set_value(self.tableObjects[a][b][c][d], True)
+            self.state = self.game.pickPlace(a, b, c, d)
+            if self.state[0][0] == 1:
+                print(f"You Won {state[0][1]}")
+                exit()
+            elif self.state[0][0] == 7:
+                self.board = self.state[2]
+                text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+                dpg.set_item_label(self.tableObjects[a][b][c][d], f'{text}')
 
-            self.forceFieldCOL = self.state[1][0]
-            self.forceFieldROW = self.state[1][1]
-            self.state[0][0] = 0
+                self.forceFieldCOL = self.state[1][0]
+                self.forceFieldROW = self.state[1][1]
+                self.state[0][0] = 0
 
-            while self.state[0][0] != 7:
-                self.state = self.game.rndPlace()
-                if self.state[0][0] == 1:
-                    print(f"You Won {self.state[0][1]}")
-                    exit()
+                while self.state[0][0] != 7:
+                    self.state = self.game.rndPlace()
+                    if self.state[0][0] == 1:
+                        print(f"You Won {self.state[0][1]}")
+                        exit()
 
-            a, b, c, d = self.state[3]
+                a, b, c, d = self.state[3]
 
-            self.board = self.state[2]
-            text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
-            dpg.set_value(self.tableObjects[a][b][c][d], True)
+                self.board = self.state[2]
+                text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+                dpg.set_item_label(self.tableObjects[a][b][c][d], f'{text}')
 
-            self.forceFieldCOL = self.state[1][0]
-            self.forceFieldROW = self.state[1][1]
-            self.state[0][0] = 0
-        # except:
-            # pass
+                self.forceFieldCOL = self.state[1][0]
+                self.forceFieldROW = self.state[1][1]
+                self.state[0][0] = 0
+        except:
+            pass
 
     def requestData(self): # Wird nicht verwendet
         if self.newData:
@@ -263,16 +260,16 @@ class Render(): # Rendert das Spiel
                         for j in range(9):
                             if i < 3: a = 0
                             elif i <6: a = 1
-                            else: a = 0
+                            else: a = 2
                             if j < 3: b = 0
                             elif j <6: b = 1
-                            else: b = 0
+                            else: b = 2
 
-                            if i == 0 or i == 3 or i == 7: c = 0
-                            elif i == 1 or i == 4 or i == 8: c = 1
+                            if i == 0 or i == 3 or i == 6: c = 0
+                            elif i == 1 or i == 4 or i == 7: c = 1
                             else: c = 2
-                            if j == 0 or j == 3 or j == 7: d = 0
-                            elif j == 1 or j == 4 or j == 8: d = 1
+                            if j == 0 or j == 3 or j == 6: d = 0
+                            elif j == 1 or j == 4 or j == 7: d = 1
                             else: d = 2
                             text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
 
