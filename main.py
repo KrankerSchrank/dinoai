@@ -23,7 +23,7 @@ from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
 
-class EnvironmentChromeTRex(gym.Env):
+class EnvironmentChromeTRex(gym.Env): # Trainingsumgebung für Dino Spiel
 
     def __init__(self,
                  screen_width,  # width of the compressed image

@@ -24,16 +24,16 @@ from stable_baselines3.common.vec_env import SubprocVecEnv
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-class EnvironmentCliTikTakToe(gym.Env):
+class EnvironmentCliTikTakToe(gym.Env): # TikTakToe Trainingsumgebung
     """Custom Environment that follows gym interface"""
 
-    def __init__(self, rendering):
+    def __init__(self, rendering): # Trainingseinheit initialisieren
         super(EnvironmentCliTikTakToe, self).__init__()
         self.action_space = spaces.Discrete(9,)
         self.observation_space = spaces.Box(low=-255, high=+255, shape=(3,3), dtype=np.uint8)
         self.ttt = TikTakToe(headless=True)
 
-    def step(self, action: int):
+    def step(self, action: int): # Einen Move machen
         state, game_board = self.ttt.headless_turn(action+1, False)
         self.done = False
         if state == -1:
@@ -58,14 +58,15 @@ class EnvironmentCliTikTakToe(gym.Env):
         info = {}
         return self.observation, self.reward, self.done, info
 
-    def reset(self):
+    def reset(self): # Zurücksetzung der Trainingsumgebung für nächsten Durchgang
         self.ttt.main()
         game_board = self.ttt.headless_player_choice(1, True)
         self.board = game_board
         self.observation = game_board
         self.observation = np.array(self.observation)
         return self.observation  # reward, done, info can't be included
-    def render(self, mode: str = 'human'):
+
+    def render(self, mode: str = 'human'): # Gibt Feld aus
         if mode == 'human':
             """
             Print the board on console
@@ -84,20 +85,22 @@ class EnvironmentCliTikTakToe(gym.Env):
                     print(f'| {symbol} |', end='')
                 print('\n' + str_line)
 
-    def close (self):
+    def close (self): # Nicht verwendet
         ...
 
 from tqdm import tqdm
 
-if __name__ == '__main__':
+if __name__ == '__main__': # Ausführung des Trainingsprozesses oder Testen der KI
     env_lambda = lambda: EnvironmentCliTikTakToe(False)
-    do_train = False
-    num_cpu = 48
+    do_train = False # Legt fest ob die KI Trainiert wird
+    num_cpu = 48 # Anzahl Trainingsinstanzen
     save_path = "cli_ttt_ppo_cnn_1980000_rnd_steps.zip"
     load_path = "cli_ttt_ppo_cnn_1980000_rnd_steps"
-    # env = SubprocVecEnv([env_lambda for i in range(num_cpu)])
-    env = EnvironmentCliTikTakToe(True)
-
+    if do_train == True:
+        env = SubprocVecEnv([env_lambda for i in range(num_cpu)]) # Trainiert mit der festgelegten Anzahl Trainingsinstanzen
+    else:
+        env = EnvironmentCliTikTakToe(True) # Führt eine einzelne Distanz zu demonstrationszwecken aus
+# Training
     if do_train:
         checkpoint_callback = CheckpointCallback(
             save_freq=196608,
@@ -119,7 +122,7 @@ if __name__ == '__main__':
     model = PPO.load('./.checkpoints/'+save_path, env=env)
 
     print(model)
-
+# Demonstration
     obs = env.reset()
 
     model.env.render()

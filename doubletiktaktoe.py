@@ -8,7 +8,7 @@ import dearpygui.dearpygui as dpg
 
 class DoubleTikTakToe():
 
-    def __init__(self):
+    def __init__(self): # Initialisiere alle wichtigen Variablen
         self.MAX_ROWS = self.MAX_COL = 3
 
         self.board = [[[[" " for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
@@ -23,7 +23,7 @@ class DoubleTikTakToe():
         self.isglobalwin = 0
         self.firstOpen = True
 
-    def checkGlobalWin(self, event):
+    def checkGlobalWin(self, event): # Prüfe ob ein Spieler das Spiel gewonnen hat
         winningPlayer = "W" + self.otherPlayer
         streak = 0
         for i in range(3):
@@ -52,13 +52,13 @@ class DoubleTikTakToe():
         streak = 0
         return 0
 
-    def win(self, event):
+    def win(self, event): # Markiere das ein Spieler ein Feld gewonnen hat
         for i in range(3):
             for j in range(3):
                 self.winningPlayer = "W" + self.otherPlayer
                 self.board[event[0]][event[1]][i][j] = self.winningPlayer
 
-    def checkWin(self, event):
+    def checkWin(self, event): # Prüft ob ein Spieler das Feld gewonnen hat
         streak = 0
         for i in range(3):
             if self.board[event[0]][event[1]][i][event[3]] == self.otherPlayer:
@@ -86,16 +86,16 @@ class DoubleTikTakToe():
         streak = 0
         return 0
 
-    def checkObstructed(self):
+    def checkObstructed(self): # Prüft ob ein Feld besetzt ist
         for i in range(3):
             for j in range(3):
                 if self.board[self.forceFieldROW][self.forceFieldCOL][i][j] == " ": return False
         return True
 
-    def place(self, event):
+    def place(self, event): # Prüft ob der Gewünschte Move valid ist und führt diesen aus
         error = False
 
-        if self.forceFieldCOL != 3 and self.forceFieldROW != 3:
+        if self.forceFieldCOL != 3 and self.forceFieldROW != 3: # Prüfen ob der Spieler freie Feld wahl hat, wenn nicht prüfen ob das Feld zugelasen ist
             forceboard = self.board[self.forceFieldCOL][self.forceFieldROW][1][1]
             if forceboard == "WX" or forceboard == "WO" or forceboard == "B":
                 for i in range(3):
@@ -112,19 +112,19 @@ class DoubleTikTakToe():
             if error == True:
                 return [9, self.activePlayer]
 
-        if self.board[event[0]][event[1]][event[2]][event[3]] == " " and error == False:
-            self.board[event[0]][event[1]][event[2]][event[3]] = self.activePlayer
+        if self.board[event[0]][event[1]][event[2]][event[3]] == " " and error == False: # Prüft ob ein Move möglich ist
+            self.board[event[0]][event[1]][event[2]][event[3]] = self.activePlayer # Ausführung des Moves
 
             self.forceFieldCOL = event[3]
-            self.forceFieldROW = event[2]
+            self.forceFieldROW = event[2] # Legt nächstes Feld Fest
 
-            self.cache = self.activePlayer
+            self.cache = self.activePlayer # Wechsele Aktiven Spieler
             self.activePlayer = self.otherPlayer
             self.otherPlayer = self.cache
-            iswin = self.checkWin(event)
-            if iswin == 1:
+            iswin = self.checkWin(event) # Prüfe ob ein Spieler ein Feld gewonnen hat
+            if iswin == 1: # Wenn ja makiere das Feld als gewonnen
                 self.win(event)
-                self.isglobalwin = self.checkGlobalWin(event)
+                self.isglobalwin = self.checkGlobalWin(event) # Prüfe ob der Spieler das Spiel gewonnen hat
                 iswin = 0
             if self.isglobalwin == 1:
                 return [1, self.otherPlayer]
@@ -133,12 +133,12 @@ class DoubleTikTakToe():
         error = False
         return [7, self.activePlayer]
 
-    def pickPlace(self, a, b, c, d):
+    def pickPlace(self, a, b, c, d): # Versucht einen Move für bestimmte Koordinaten auszuführen
         event = [a, b, c, d]
         placeState = self.place(event)
         return [placeState, [self.forceFieldCOL, self.forceFieldROW], self.board, event]
 
-    def rndPlace(self):
+    def rndPlace(self): # Führt einen Move für zufällige Koordinaten aus
         c = choice([0, 1, 2])
         print(c)
         d = choice([0, 1, 2])
@@ -152,7 +152,7 @@ class DoubleTikTakToe():
         placeState = self.place(event)
         return [placeState, [self.forceFieldCOL, self.forceFieldROW], self.board, event]
 
-    def settings(self):
+    def settings(self): # Setzt das Spiel zurück
         self.MAX_ROWS = self.MAX_COL = 3
 
         self.board = [[[[" " for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
@@ -169,7 +169,7 @@ class DoubleTikTakToe():
 
         return self.board
 
-    def clean(self):
+    def clean(self): # Leert console (Nicht wirklich benötigt)
         """
         Clears the console
         """
@@ -179,9 +179,9 @@ class DoubleTikTakToe():
         else:
             system('clear')
 
-class Render():
-
-    def __init__(self):
+class Render(): # Rendert das Spiel
+# TODO: : Fixen der Ausgabe und in eigene Datei Refactorn um damit auch die KI nutzen zu können sollte kein Problem sein
+    def __init__(self): # Initsialisiere Dearpygui
         dpg.create_context()
         self.userData = [0,0,0,0]
         self.newData = False
@@ -195,7 +195,7 @@ class Render():
 
         self.tableObjects = [[[[0 for l in range(3)] for k in range(3)] for j in range(3)] for i in range(9)]
 
-    def clb_selectable(self, sender, app_data, user_data):
+    def clb_selectable(self, sender, app_data, user_data): # Reaktion auf Input und Game Loop
         # try:
         a, b, c, d = user_data
 
@@ -207,6 +207,7 @@ class Render():
         elif self.state[0][0] == 7:
             self.board = self.state[2]
             text = "#" if self.board[a][b][c][d] == " " else self.board[a][b][c][d]
+            # BUG: Wie ändert man bitteschön den Text (Fixen)
             dpg.set_value(self.tableObjects[a][b][c][d], True)
 
             self.forceFieldCOL = self.state[1][0]
@@ -231,13 +232,13 @@ class Render():
         # except:
             # pass
 
-    def requestData(self):
+    def requestData(self): # Wird nicht verwendet
         if self.newData:
             return self.userData
         else:
             return False
 
-    def render(self):
+    def render(self): # Erstversion des UI erstellens
 
         with dpg.theme() as table_theme:
             with dpg.theme_component(dpg.mvTable):
@@ -288,12 +289,12 @@ class Render():
         dpg.setup_dearpygui()
         dpg.show_viewport()
 
-        while dpg.is_dearpygui_running():
+        while dpg.is_dearpygui_running(): # Render Loop
             dpg.render_dearpygui_frame()
 
         dpg.destroy_context()
 
-if __name__ == "__main__":
+if __name__ == "__main__": # Rendering aufrufen
     render = Render()
 
     render.render()
